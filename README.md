@@ -15,3 +15,13 @@
 - Для получения курса валют использовать любой удобный сервис, например https://www.cbr.ru
 - Результат прислать ссылкой на git (github, gitlab, bibucket, etc., не имеет значение).
 - При выполнение будет хорошо, если засечете время выполнения задания.
+
+## Установка
+- `git clone git@github.com:EugeneVdovenko/absolute-HR--test.git ./project`
+- `cd project`
+- `composer install`
+- Внести данные в файл`.env`
+- `php artisan app:init`
+- `php artisan migrate`
+- Добавить в cron
+  ```* * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1```
