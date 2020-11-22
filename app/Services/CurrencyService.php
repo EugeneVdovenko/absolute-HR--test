@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Currency;
+use Illuminate\Database\Eloquent\Collection;
 
 class CurrencyService
 {
@@ -16,5 +17,13 @@ class CurrencyService
         }
 
         return null;
+    }
+
+    public function getCurrencyIdsByCodes($codes)
+    {
+        return Currency::query()
+            ->whereIn('code', $codes)
+            ->pluck('id', 'code')
+            ->toArray();
     }
 }

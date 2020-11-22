@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Currency extends Model
 {
+    public $timestamps = false;
+
     public function sourceExchangeRate(): HasMany
     {
         return $this->hasMany(ExchangeRate::class, 'source_currency_id');

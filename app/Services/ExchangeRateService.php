@@ -35,14 +35,28 @@ class ExchangeRateService
 
     public function update(): bool
     {
-        $result = true;
-        if ($this->isNeedUpdate()) {
-            $this->getCurrencies();
-            $response = $this->provider->getExchangeRates();
-            $result = $this->hydrateAndSave($response);
+        $this->getCurrencies();
+        $response = $this->provider->getExchangeRates();
+        return $this->hydrateAndSave($response);
+    }
+
+    public function list($filter = []): Collection
+    {
+        $query = ExchangeRate::query();
+
+        if (Arr::has($filter, 'source_currency_id')) {
+            $query->whereIn('source_currency_id', $filter['source_currency_id']);
         }
 
-        return $result;
+        if (Arr::has($filter, 'target_currency_id')) {
+            $query->whereIn('target_currency_id', $filter['target_currency_id']);
+        }
+
+        if (Arr::has($filter, 'date')) {
+            $query->whereBetween('updated_at', [clone ($filter['date']->setTime(0, 0, 0, 0)), $filter['date']->setTime(0, 0, 0, 0)->addDay()]);
+        }
+
+        return $query->orderByDesc('updated_at')->get();
     }
 
     protected function getCurrencies(): Collection
@@ -52,15 +66,6 @@ class ExchangeRateService
         }
 
         return $this->currencies;
-    }
-
-    protected function isNeedUpdate(): bool
-    {
-        $lastUpdated = ExchangeRate::query()
-            ->where('updated_at', '>', now()->subDay())
-            ->first(['updated_at']);
-
-        return is_null($lastUpdated);
     }
 
     protected function hydrateAndSave($data): bool

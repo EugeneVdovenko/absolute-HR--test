@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property string $title
  * @property string $comment
- * @property $currncies
+ * @property $currencies
  */
 class Collection extends Model
 {
-    //
+    protected $casts = [
+        'currencies' => 'array'
+    ];
 }
